@@ -3,12 +3,15 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = "us-east-1"
     }
 
     stages {
         stage('Checkout Source') {
             steps {
-                git branch: 'main', url: 'https://github.com/scaler-bhavya/jenkins-k8s-docker.git'
+                git branch: 'main', url: 'https://github.com/scaler-bhavya/jenkins-docker.git'
             }
         }
 
@@ -31,13 +34,16 @@ pipeline {
                 sh 'docker push bhavyascaler/react-app:latest'
             }
         }
-
-        stage('Apply Kubernetes files') {
+       stage("Deploy to EKS") {
             steps {
                 script {
-                    withKubeConfig([credentialsId: 'k8s-credentials', serverUrl: 'https://127.0.0.1:44471']) {
-                        sh 'kubectl apply -f deployment.yaml'
-                        sh 'kubectl apply -f service.yaml'
+                    dir('kubernetes') {
+                        # Update packages inside the cluster
+                        sh "aws eks update-kubeconfig --name Jenkins-k8s"
+                        # Deploy an application
+                        sh "kubectl apply -f deployment.yaml"
+                        # Deploy a service
+                        sh "kubectl apply -f service.yaml"
                     }
                 }
             }
