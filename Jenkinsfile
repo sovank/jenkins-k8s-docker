@@ -35,19 +35,17 @@ pipeline {
             }
         }
         stage("Deploy to EKS") {
-            steps {
-                script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
-                        // Setting up the kubeconfig for EKS
-                        sh 'aws eks update-kubeconfig --name Jenkins-k8s --region $AWS_DEFAULT_REGION'
-                        // Deploying to Kubernetes
-                        dir('kubernetes') {
-                            sh 'kubectl apply -f deployment.yaml'
-                            sh 'kubectl apply -f service.yaml'
-                        }
-                    }
+    steps {
+        script {
+            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
+                dir('kubernetes') {
+                    sh "aws eks update-kubeconfig --name Jenkins-k8s"
+                    sh "kubectl apply -f deployment.yaml"
+                    sh "kubectl apply -f service.yaml"
                 }
             }
         }
     }
+}
+ }
 }
