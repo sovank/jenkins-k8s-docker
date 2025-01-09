@@ -22,10 +22,14 @@ pipeline {
                 }
             }
         }
-
         stage('Login') {
             steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+                script {
+                    // Retrieve Docker Hub credentials
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKERHUB_PSW', usernameVariable: 'DOCKERHUB_USR')]) {
+                        sh 'echo $DOCKERHUB_PSW | docker login -u $DOCKERHUB_USR --password-stdin'
+                    }
+                }
             }
         }
 
@@ -34,15 +38,15 @@ pipeline {
                 sh 'docker push bhavyascaler/react-app:latest'
             }
         }
-       stage("Deploy to EKS") {
+        stage("Deploy to EKS") {
             steps {
                 script {
                     dir('kubernetes') {
-                        # Update packages inside the cluster
+                        // Update packages inside the cluster
                         sh "aws eks update-kubeconfig --name Jenkins-k8s"
-                        # Deploy an application
+                        // Deploy an application
                         sh "kubectl apply -f deployment.yaml"
-                        # Deploy a service
+                        // Deploy a service
                         sh "kubectl apply -f service.yaml"
                     }
                 }
