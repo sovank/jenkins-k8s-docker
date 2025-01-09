@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = "us-east-1"
         // Specify where kubeconfig should be stored if needed, especially in multi-user environments or where default location permissions might be restricted
-        KUBECONFIG = "/var/lib/jenkins/.kube/config"
+        KUBECONFIG = "/home/ubuntu/.kube/config"
     }
 
     stages {
