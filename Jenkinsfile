@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         AWS_DEFAULT_REGION = "us-east-1"
-        // Specify where kubeconfig should be stored if needed, especially in multi-user environments or where default location permissions might be restricted
-        KUBECONFIG = "/home/ubuntu/.kube/config"
     }
 
     stages {
@@ -21,7 +19,6 @@ pipeline {
                 }
             }
         }
-
         stage('Login') {
             steps {
                 script {
@@ -37,20 +34,26 @@ pipeline {
                 sh 'docker push bhavyascaler/react-app:latest'
             }
         }
-
         stage("Deploy to EKS") {
             steps {
                 script {
-                    withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-                        // Explicitly setting the region and specifying the kubeconfig path ensures that the AWS CLI and kubectl use correct configurations
-                        sh "aws eks update-kubeconfig --name Jenkins-k8s --region ${AWS_DEFAULT_REGION} --kubeconfig ${KUBECONFIG}"
-                        dir('kubernetes') {
-                            sh "kubectl apply -f deployment.yaml --kubeconfig ${KUBECONFIG}"
-                            sh "kubectl apply -f service.yaml --kubeconfig ${KUBECONFIG}"
-                        }
+                    // Binding multiple credentials
+                    withCredentials([
+                        [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials', 
+                         accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
+                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
+                        [credentialsId: 'aws-session', variable: 'AWS_SESSION_TOKEN']
+                    ]) {
+                        sh 'echo Updating kubeconfig'
+                        sh 'aws eks update-kubeconfig --name Jenkins-k8s --region us-east-1'
+                        sh 'kubectl apply -f deployment.yaml'
+                        sh 'kubectl apply -f service.yaml'
                     }
                 }
             }
         }
     }
 }
+
+
+        
