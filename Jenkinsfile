@@ -2,9 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_DEFAULT_REGION = "us-east-1"
     }
 
@@ -25,7 +22,6 @@ pipeline {
         stage('Login') {
             steps {
                 script {
-                    // Retrieve Docker Hub credentials
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'DOCKERHUB_PSW', usernameVariable: 'DOCKERHUB_USR')]) {
                         sh 'echo $DOCKERHUB_PSW | docker login -u $DOCKERHUB_USR --password-stdin'
                     }
@@ -41,13 +37,13 @@ pipeline {
         stage("Deploy to EKS") {
             steps {
                 script {
-                    dir('kubernetes') {
-                        // Update packages inside the cluster
-                        sh "aws eks update-kubeconfig --name Jenkins-k8s"
-                        // Deploy an application
-                        sh "kubectl apply -f deployment.yaml"
-                        // Deploy a service
-                        sh "kubectl apply -f service.yaml"
+                    withCredentials([string(credentialsId: 'aws_credentials', variable: 'AWS_ACCESS_KEY_ID'), 
+                                     string(credentialsId: 'aws_credentials', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        dir('kubernetes') {
+                            sh "aws eks update-kubeconfig --name Jenkins-k8s"
+                            sh "kubectl apply -f deployment.yaml"
+                            sh "kubectl apply -f service.yaml"
+                        }
                     }
                 }
             }
