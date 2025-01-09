@@ -37,8 +37,8 @@ pipeline {
         stage("Deploy to EKS") {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'aws_credentials', variable: 'AWS_ACCESS_KEY_ID'), 
-                                     string(credentialsId: 'aws_credentials', variable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    withCredentials([string(credentialsId: 'aws-credentials', variable: 'AWS_ACCESS_KEY_ID'), 
+                                     string(credentialsId: 'aws-credentials', variable: 'AWS_SECRET_ACCESS_KEY')]) {
                         dir('kubernetes') {
                             sh "aws eks update-kubeconfig --name Jenkins-k8s"
                             sh "kubectl apply -f deployment.yaml"
