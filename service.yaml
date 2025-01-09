@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service #The name of the Kubernetes Service to be created in the Kubernetes cluster
+  name: service
 spec:
   selector:
-    app: react-app 
- #Type of the Kubernetes Service
-  ports:
-  - protocol: TCP
-    port: 3000 #Service port
-    targetPort: 3000 #The port for the React.js application container
+    app: react-app
   type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
