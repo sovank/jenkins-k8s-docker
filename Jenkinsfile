@@ -46,7 +46,7 @@ pipeline {
                     ]) {
                         sh """
                           echo "Updating kubeconfig..."
-                          aws eks update-kubeconfig --name Jenkins-k8s --region ${AWS_DEFAULT_REGION}
+                          aws eks update-kubeconfig --name amcdemo --region ${AWS_DEFAULT_REGION}
                           kubectl apply -f deployment.yaml
                           kubectl apply -f service.yaml
                         """
