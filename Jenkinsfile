@@ -42,7 +42,7 @@ pipeline {
                         [$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials', 
                          accessKeyVariable: 'AWS_ACCESS_KEY_ID', 
                          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
-                        [$class: 'StringBinding', credentialsId: 'aws-session', variable: 'AWS_SESSION_TOKEN']
+        
                     ]) {
                         sh """
                           echo "Updating kubeconfig..."
