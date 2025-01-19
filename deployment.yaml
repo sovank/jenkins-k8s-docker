@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-2 #The name of the Kubernetes Deployment to be created in the Kubernetes cluster
+  name: deployment-19-jan #The name of the Kubernetes Deployment to be created in the Kubernetes cluster
   labels:
     app: react-app
 spec:
