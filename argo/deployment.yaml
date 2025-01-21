@@ -5,7 +5,7 @@ metadata:
   labels:
     app: react-app
 spec:
-  replicas: 2 #The number of pods to be created in the Kubernetes cluster for the React.js application container
+  replicas: 4 #The number of pods to be created in the Kubernetes cluster for the React.js application container
   selector:
     matchLabels:
       app: react-app
