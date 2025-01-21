@@ -1,21 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-19-jan #The name of the Kubernetes Deployment to be created in the Kubernetes cluster
+  name: deployment-19-jan # The name of the Kubernetes Deployment
   labels:
     app: react-app
 spec:
-  replicas: 2 #The number of pods to be created in the Kubernetes cluster for the React.js application container
+  replicas: 2 # The number of pods to be created
   selector:
     matchLabels:
       app: react-app
   template:
     metadata:
       labels:
-        app: react-app 
+        app: react-app
     spec:
       containers:
-      - name: react-app #The name of the react.js application container
-        image: deepaks374/react-app:latest #The Docker image for building the React.js application container
+      - name: react-app # Name of the container
+        image: deepaks374/react-app:latest # Docker image for the React.js app
+        imagePullPolicy: Always # Ensure Kubernetes pulls the latest image from Docker Hub
         ports:
-        - containerPort: 3000 #The port for the React.js application container
+        - containerPort: 3000 # Port exposed by the container
