@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-19-jan # The name of the Kubernetes Deployment
+  name: deployment-2 # The name of the Kubernetes Deployment
   labels:
     app: react-app
 spec:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: react-app # Name of the container
-        image: deepaks374/react-app:latest # Docker image for the React.js app
+        image: sovankeshri/react-app:latest # Docker image for the React.js app
         imagePullPolicy: Always # Ensure Kubernetes pulls the latest image from Docker Hub
         ports:
         - containerPort: 3000 # Port exposed by the container
