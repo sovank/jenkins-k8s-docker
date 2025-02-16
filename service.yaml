@@ -10,3 +10,6 @@ spec:
   - name: http
     port: 80              # Port on which the service will be accessible
     targetPort: 3000      # Port where your application is listening inside the container
+
+# to expose the service use the below command
+# kubectl port-forward service/react-app-service 8090:80  # 8080:80 means local port 8090 -> service port 80
